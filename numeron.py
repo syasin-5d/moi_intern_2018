@@ -3,6 +3,28 @@ import requests
 import json
 import copy
 
+class Answer():
+    def __init__(self, answer):
+        self.answer = answer
+        self.used = [False for x in range(10)] # 0-9のうち、answerが使っている数字はどれか
+        self.what_is_blow = [False for x in range(10)] # 0-9のうち、answerに使われている数字(blow)
+        self.what_is_hit = [False for x in range(len(answer))] # i 桁目の答えが確定(hit)
+        self.hits = 0
+        self.blows = 0
+        self.set_used()
+        
+    def set_used(self):
+        self.used = [False for x in range(10)]
+        for i in self.answer:
+            self.used[int(i)] = True
+            
+    def set_status(self, res_post_ans):
+        self.hits = res_post_ans['hit']
+        self.blows = res_post_ans['blow']
+        
+    def __deepcopy__(self, memo):
+        new_obj = Answer(self.answer)
+        return new_obj
 
 class Numeron():
     def __init__(self, level):
@@ -41,27 +63,3 @@ class Numeron():
             print("conguratulation.")
             sys.exit(0)
         answer.set_status(r.json())
-
-
-class Answer():
-    def __init__(self, answer):
-        self.answer = answer
-        self.used = [False for x in range(10)] # 0-9のうち、answerが使っている数字はどれか
-        self.what_is_blow = [False for x in range(10)] # 0-9のうち、answerに使われている数字(blow)
-        self.what_is_hit = [False for x in range(10)] # i 桁目の答えが確定(hit)
-        self.hits = 0
-        self.blows = 0
-        self.set_used()
-        
-    def set_used(self):
-        self.used = [False for x in range(10)]
-        for i in self.answer:
-            self.used[int(i)] = True
-            
-    def set_status(self, res_post_ans):
-        self.hits = res_post_ans['hit']
-        self.blows = res_post_ans['blow']
-        
-    def __deepcopy__(self, memo):
-        new_obj = Answer(self.answer)
-        return new_obj 
